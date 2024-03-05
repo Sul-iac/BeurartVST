@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="K3CFhb" name="Beurart_test_V1" projectType="guiapp" useAppConfig="0"
+<JUCERPROJECT id="K3CFhb" name="BeurartV1" projectType="guiapp" useAppConfig="0"
               addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1">
-  <MAINGROUP id="DGCBhq" name="Beurart_test_V1">
+  <MAINGROUP id="DGCBhq" name="BeurartV1">
     <GROUP id="{D8B69971-D083-5C3D-2CD5-1B19589C8429}" name="Source">
       <GROUP id="{272A6577-E113-C07F-B69B-D37355F1502E}" name="GUI">
         <GROUP id="{16B574C5-99BE-8941-7730-A111EDDD2726}" name="Serial">
@@ -28,11 +28,11 @@
     <FILE id="tBkLEB" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
   </MAINGROUP>
   <MODULES>
-    <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
-    <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
-    <MODULE id="juce_events" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
-    <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
-    <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_events" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_serialport" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
   </MODULES>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1"/>

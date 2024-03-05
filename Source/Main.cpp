@@ -2,9 +2,10 @@
 #include "GUI/MainComponent.h"
 #include "Serial/SerialDevice.h"
 #include <juce_serialport/juce_serialport.h>
+#include <Source/Serial/SerialPortListMonitor.h>
 
 // NOTE: this is hard coded for test purposes, and should be replaced with a way to set it in the UI
-const juce::String kSerialPortName{ "\\\\.\\COM3" };
+//const juce::String kSerialPortName{ "\\\\.\\COM3" };
 
 class JuceSerialApplication : public juce::JUCEApplication
 {
@@ -49,7 +50,20 @@ public:
     void initSerial()
     {
         // NOTE: for example purposes, the SerialDevice class tries to open the serial port once a name has been assigned
-        serialDevice.init(kSerialPortName);
+        //serialDevice.init(kSerialPortName);
+        SerialPortListMonitor portListMonitor;
+        juce::StringPairArray serialPorts = portListMonitor.getSerialPortList();
+        if (serialPorts.size() > 0)
+        {
+            const juce::String serialPortName = serialPorts.getAllValues()[0];
+            serialDevice.init(serialPortName);
+        }
+        else
+        {
+            juce::AlertWindow::showMessageBoxAsync(juce::AlertWindow::WarningIcon,
+                                                    "No serial port Found",
+                                                    "No serial port available. Please connect a serial device a try again.");
+        }
     }
 
     void initUi()

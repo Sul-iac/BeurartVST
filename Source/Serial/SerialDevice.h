@@ -2,7 +2,7 @@
 
 #include "SerialPortListMonitor.h"
 #include <juce_serialport/juce_serialport.h>
-
+#include <mutex>
 
 // NOTE: This class could be named for the name of the thing you are connecting to: LEDContllerDevice, DrumMachineDevice, SolarMonitorDevice, etc
 class SerialDevice : private juce::Thread                             //rajouter ici "private juce::Timer" si jamais j'ai besoin de remettre la fonction timerCallback 
@@ -28,6 +28,7 @@ private:
         processSerialPort,
     };
 
+    juce::CriticalSection serialPortListLock;
     juce::String serialPortName;
     std::unique_ptr<SerialPort> serialPort;
     std::unique_ptr<SerialPortInputStream> serialPortInput;

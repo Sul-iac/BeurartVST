@@ -286,6 +286,7 @@ void SerialDevice::run()                                            // c'est dan
     uint8_t commandDataCount = 0;
     while (!threadShouldExit())                                     // tant que le thread ne rencontre pas d'erreur particuliere et ne dois pas fermer
     {
+        juce::ScopedLock lock(serialPortListLock);
         switch (threadTask)
         {
         case ThreadTask::idle:                                      // il est dans cet etat qund il n'y a pas de commandes envoyee, il est au repos

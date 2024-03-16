@@ -10,7 +10,7 @@ enum ParseState
 {
     waitingForStartByte1,                   // start byte is "<"
     waitingForCommand,                      // attend les commandes donnees
-    waitingForCommandDataSize,              // attend la taille de la commande  
+    waitingForCommandDataSize,              // attend la taille de la commande
     waitingForCommandData,                  // attend la donnee demande par la commande
     waitingForEndByte1                      // end byte est ">"
 };
@@ -87,29 +87,53 @@ SerialDevice::~SerialDevice()
 
 void SerialDevice::init(juce::String newSerialPortName)
 {
+    juce::Logger::outputDebugString("Initializing serial device with port: " + newSerialPortName);
     serialPortName = newSerialPortName;
 }
 
-
-
-/*void SerialDevice::setTempo(float tempoToSend)
+void SerialDevice::handleOutVoie1(int sliderValue)
 {
-    if (serialPortOutput.get() == nullptr)
-        return;
+    if (serialPortOutput) {
+        DBG("serialPortOutput is valid. Sending data...");
+        juce::String commandString = "<V1_OUT=" + juce::String(sliderValue) + ">";
+        DBG("Command String: " + commandString);
+        const char* commandData = commandString.toRawUTF8();
+        int dataSize = static_cast<int>(strlen(commandData));
 
-    // NOTE: by sending an int instead of a float we don't have to worry about the receiving end storing floats in the same format as the send
-    const auto tempo_as_int{ static_cast<uint32_t>(tempoToSend * std::pow(10, kNumberOfDecimalPlaces)) };
-    const std::vector<uint8_t> data{ kStartByte1, Command::V1_OUT, 4,
-                                      static_cast<uint8_t>(tempo_as_int & 0xff), static_cast<uint8_t>((tempo_as_int >> 8) & 0xff),
-                                      static_cast<uint8_t>((tempo_as_int >> 16) & 0xff), static_cast<uint8_t>((tempo_as_int >> 24) & 0xff) };
-    serialPortOutput->write(data.data(), data.size());
-}*/
+        serialPortOutput->write(reinterpret_cast<const uint8_t*>(commandData), dataSize);
+    }
+    else {
+        DBG("serialPortOutput is null, cannot send data.");
+    }
+    /*juce::String commandString = "<V1_OUT=";
+    commandString += juce::String(sliderValue);
+    commandString += ">";
 
+    DBG("Command String: " << commandString);
+    DBG("Data Size: " << commandString.length());
+
+    const char* commandData = commandString.toRawUTF8();
+    int dataSize = juce::String(commandData).length();
+
+    if (serialPortOutput.get() != nullptr)
+    {
+        DBG("Serial Port is not null, sending data to the arduino...");
+        serialPortOutput->write(reinterpret_cast<const uint8_t*>(commandData), dataSize);
+        DBG(("Sending to Arduino: " + commandString + "\n").toRawUTF8());
+    }
+    else
+    {
+        DBG("SerialPortOutput est null. L'erreur est la");
+    } */
+}
 
 void SerialDevice::open(void)                                   //prepare le port a s'ouvrir en settant le THreadTask. Il ne sera ouvert qu'une fois appele dans run()
 {
+    juce::Logger::outputDebugString("Attempting to open serial port: " + serialPortName);
     if (serialPortName.length() > 0)
-        threadTask = ThreadTask::openSerialPort;                
+        threadTask = ThreadTask::openSerialPort;    
+    else
+        juce::Logger::outputDebugString("Serial port name is empty, cannot open.");
 }
 
 void SerialDevice::close(void)                                  //prepare le port a se fermer 
@@ -120,6 +144,10 @@ void SerialDevice::close(void)                                  //prepare le por
 bool SerialDevice::openSerialPort(void)                         //on definie la commande d'ouverture
 {
     serialPort = std::make_unique<SerialPort>([](juce::String, juce::String) {});
+    if (!serialPort) {
+        juce::Logger::outputDebugString("Failed to create SerialPort object.");
+        return false;
+    }   
     bool opened = serialPort->open(serialPortName);            // store les donnees de la fonction open dans un variable bool 
 
     if (opened)
@@ -131,10 +159,19 @@ bool SerialDevice::openSerialPort(void)                         //on definie la 
         serialPortConfig.parity = SerialPortConfig::SERIALPORT_PARITY_NONE;             // la parity est un error check qui ajoute un extra bit a chaque charactere puis compare si ils sont la. Il est desactive
         serialPortConfig.stopbits = SerialPortConfig::STOPBITS_1;                       // error checking qui ajoute un charactere de fin de data
         serialPort->setConfig(serialPortConfig);                                        // remet a jour les parametres a chaque ouverture
+        juce::Logger::outputDebugString("Serial port configured.");
 
         serialPortInput = std::make_unique<SerialPortInputStream>(serialPort.get());    // creer les streams d'entree 
         serialPortOutput = std::make_unique<SerialPortOutputStream>(serialPort.get());  // creer le stream de sortie. On peut maintenant enovyer et recevoir les donnees
-        juce::Logger::outputDebugString("Serial port: " + serialPortName + " opened");  // message
+        if (serialPortInput && serialPortOutput)
+        {
+            juce::Logger::outputDebugString("Serial port streams initialized");
+            juce::Logger::outputDebugString("Serial port: " + serialPortName + " opened");  // message
+        }
+        else
+        {
+            juce::Logger::outputDebugString("Failed to intialize serial port streams");
+        }
     }
     else
     {
@@ -159,13 +196,15 @@ void SerialDevice::closeSerialPort(void)
 // NOTE: these handleXXXXCommand functions store the received data into the data model, and should also alert listeners of the change
 //       I usually use ValueTrees for the data model, and use the property change callbacks to notify listeners
 
-void SerialDevice::handleOutVoie1(int sliderValue)
+
+
+/*void SerialDevice::handleOutVoie2(int sliderValue)
 {
-    juce::String commandString = "<V1_OUT=";
+    juce::String commandString = "<V2_OUT=";
     commandString += juce::String(sliderValue);
     commandString += ">";
 
-    DBG("Command String: " << commandString); 
+    DBG("Command String: " << commandString);
     DBG("Data Size: " << commandString.length());
 
     const char* commandData = commandString.toRawUTF8();
@@ -173,22 +212,7 @@ void SerialDevice::handleOutVoie1(int sliderValue)
 
     if (serialPortOutput.get() != nullptr)
         serialPortOutput->write(reinterpret_cast<const uint8_t*>(commandData), dataSize);
-}
-
-void SerialDevice::handleOutVoie2(int sliderValue)
-{
-    uint8_t data[2];
-    data[0] = Command::V2_OUT;
-    data[1] = static_cast<uint8_t>(sliderValue);
-
-    if (data[1] < 0)
-        data[1] = 0;
-    else if (data[1] > 219)
-        data[1] = 220;
-
-    if (serialPortOutput.get() != nullptr)
-        serialPortOutput->write(data, 2);
-}
+}*/
 
 //=============================== TEST ====================================//
 
@@ -222,9 +246,9 @@ void SerialDevice::handleCommand(uint8_t command, uint8_t* data, int dataSize)
     switch (command)
     {
 
-      /*case Command::V1_OUT: handleOutVoie1(data, dataSize); break;
-        case Command::V2_OUT: handleOutVoie2(data, dataSize); break;
-        case Command::PG_SELECT: handlePageselection(data, dataSize); break;
+      //case Command::V1_OUT: handleOutVoie1(data, dataSize); break;
+     // case Command::V2_OUT: handleOutVoie2(data, dataSize ); break;
+       /*case Command::PG_SELECT: handlePageselection(data, dataSize); break;
         case Command::CHN_SELECT: handleChannelSelection(data, dataSize); break;
         case Command::BANK_SELECT: handleBankSelection(data, dataSize); break;
         case Command::BANK_LOAD: handleBankLoading(data, dataSize); break;
@@ -271,8 +295,6 @@ void SerialDevice::handleCommand(uint8_t command, uint8_t* data, int dataSize)
         case Command::V2_BPHPF: handleByPassHighPassFilterVoie2(data, dataSize); break;
         case Command::V2_HPF: handleHighPassFilterVoie2(data, dataSize); break;
         case Command::V2_CAG: handleCagVoie2(data, dataSize); break;*/
- 
-        
     }
 }
 
@@ -421,7 +443,7 @@ void SerialDevice::run()                                            // c'est dan
     }
 }
 
- //cette partie du programme fait que chaque programme s'execute l'un apres l'autre */
+ //cette partie du programme fait que chaque programme s'execute l'un apres l'autre
 
 /*void SerialDevice::timerCallback()
 {

@@ -15,8 +15,9 @@ public:
     void init(juce::String newSerialPortName);
 
     void handleOutVoie1(int sliderValue);
-    //void sendSliderVolumeVoie1(int sliderValue);
+    //void handleOutVoie2(int sliderValue);
 
+    //void sendSliderVolumeVoie1(int sliderValue);
 
 private:
     enum class ThreadTask
@@ -44,7 +45,6 @@ private:
     void handleCommand(uint8_t command, uint8_t* data, int dataSize);
 
 //===========================================================//
-    void handleOutVoie2(int sliderValue);
 
     void run() override;
 };

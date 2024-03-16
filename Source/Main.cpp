@@ -5,7 +5,8 @@
 #include <Source/Serial/SerialPortListMonitor.h>
 
 // NOTE: this is hard coded for test purposes, and should be replaced with a way to set it in the UI
-//const juce::String kSerialPortName{ "\\\\.\\COM3" };
+
+const juce::String kSerialPortName{ "\\\\.\\COM3" };
 
 class JuceSerialApplication : public juce::JUCEApplication
 {
@@ -51,19 +52,30 @@ public:
     {
         // NOTE: for example purposes, the SerialDevice class tries to open the serial port once a name has been assigned
         //serialDevice.init(kSerialPortName);
-        SerialPortListMonitor portListMonitor;
-        juce::StringPairArray serialPorts = portListMonitor.getSerialPortList();
-        if (serialPorts.size() > 0)
-        {
-            const juce::String serialPortName = serialPorts.getAllValues()[0];
-            serialDevice.init(serialPortName);
-        }
-        else
-        {
-            juce::AlertWindow::showMessageBoxAsync(juce::AlertWindow::WarningIcon,
-                                                    "No serial port Found",
-                                                    "No serial port available. Please connect a serial device a try again.");
-        }
+
+            DBG("Starting initSerial...");
+
+            SerialPortListMonitor portListMonitor;
+            juce::StringPairArray serialPorts = portListMonitor.getSerialPortList();
+            DBG("Found " + juce::String(serialPorts.size()) + " serial ports.");
+
+            if (serialPorts.size() > 0)
+            {
+                const juce::String serialPortName = serialPorts.getAllValues()[0];
+                DBG("Initializing serial device with port: " + serialPortName);
+                serialDevice.init(serialPortName);
+                DBG("Serial device initialized.");
+            }
+            else
+            {
+                DBG("No serial ports found.");
+                juce::AlertWindow::showMessageBoxAsync(juce::AlertWindow::WarningIcon,
+                    "No serial port Found",
+                    "No serial port available. Please connect a serial device a try again.");
+            }
+
+            DBG("initSerial complete.");
+
     }
 
     void initUi()

@@ -2,8 +2,8 @@
 
 const auto toolWindowHeight{ 30 };
 
-MainComponent::MainComponent() 
-    : serialComponent(serialDevice)
+MainComponent::MainComponent(SerialDevice& serialDeviceRef) 
+    : serialComponent(serialDeviceRef)
 {
     addAndMakeVisible(serialComponent);
     setSize(800, 600);

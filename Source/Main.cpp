@@ -51,7 +51,7 @@ public:
     void initSerial()
     {
         // NOTE: for example purposes, the SerialDevice class tries to open the serial port once a name has been assigned
-        //serialDevice.init(kSerialPortName);
+        serialDevice.init(kSerialPortName);
 
             DBG("Starting initSerial...");
 
@@ -66,43 +66,37 @@ public:
                 serialDevice.init(serialPortName);
                 DBG("Serial device initialized.");
             }
-            else
-            {
-                DBG("No serial ports found.");
-                juce::AlertWindow::showMessageBoxAsync(juce::AlertWindow::WarningIcon,
-                    "No serial port Found",
-                    "No serial port available. Please connect a serial device a try again.");
-            }
-
             DBG("initSerial complete.");
 
     }
 
     void initUi()
     {
-        mainWindow.reset(new MainWindow(getApplicationName()));
+        mainWindow.reset(new MainWindow(getApplicationName(), serialDevice));
     }
 
     class MainWindow : public juce::DocumentWindow
     {
     public:
-        MainWindow(juce::String name)
+        MainWindow(juce::String name, SerialDevice& serialDeviceRef)
             : DocumentWindow(name,
                 juce::Desktop::getInstance().getDefaultLookAndFeel()
                 .findColour(juce::ResizableWindow::backgroundColourId),
-                DocumentWindow::allButtons)
+                DocumentWindow::allButtons),
+            mainComponent(serialDeviceRef)
         {
             setUsingNativeTitleBar(true);
-            setContentOwned(new MainComponent(), true);
+            setContentOwned(new MainComponent(serialDeviceRef), true);
             setUsingNativeTitleBar(false);
 #if JUCE_IOS || JUCE_ANDROID
             setFullScreen(true);
 #else
             setResizable(true, true);
-            centreWithSize(getWidth(), getHeight());
 #endif
 
             setVisible(true);
+            centreWithSize(getWidth(), getHeight());
+
         }
 
         void closeButtonPressed() override
@@ -111,6 +105,7 @@ public:
         }
 
     private:
+        MainComponent mainComponent;
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainWindow)
     };
 

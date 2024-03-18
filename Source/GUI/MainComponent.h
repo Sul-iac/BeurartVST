@@ -7,7 +7,7 @@
 class MainComponent : public juce::Component
 {
 public:
-    MainComponent();
+    MainComponent(SerialDevice& serialDeviceRef);
     ~MainComponent() override;
    
 

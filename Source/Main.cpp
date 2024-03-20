@@ -1,4 +1,4 @@
-#include <JuceHeader.h>
+ #include <JuceHeader.h>
 #include "GUI/MainComponent.h"
 #include "Serial/SerialDevice.h"
 #include <juce_serialport/juce_serialport.h>
@@ -6,7 +6,7 @@
 
 // NOTE: this is hard coded for test purposes, and should be replaced with a way to set it in the UI
 
-const juce::String kSerialPortName{ "\\\\.\\COM3" };
+//const juce::String kSerialPortName{ "\\\\.\\COM3" };
 
 class JuceSerialApplication : public juce::JUCEApplication
 {
@@ -51,42 +51,32 @@ public:
     void initSerial()
     {
         // NOTE: for example purposes, the SerialDevice class tries to open the serial port once a name has been assigned
-        serialDevice.init(kSerialPortName);
-
-            DBG("Starting initSerial...");
+       //serialDevice.init(kSerialPortName);
 
             SerialPortListMonitor portListMonitor;
             juce::StringPairArray serialPorts = portListMonitor.getSerialPortList();
-            DBG("Found " + juce::String(serialPorts.size()) + " serial ports.");
-
-            if (serialPorts.size() > 0)
-            {
-                const juce::String serialPortName = serialPorts.getAllValues()[0];
-                DBG("Initializing serial device with port: " + serialPortName);
-                serialDevice.init(serialPortName);
-                DBG("Serial device initialized.");
-            }
-            DBG("initSerial complete.");
+            const juce::String serialPortName = serialPorts.getAllValues()[0];
+            serialDevice.init(serialPortName);
 
     }
 
     void initUi()
     {
-        mainWindow.reset(new MainWindow(getApplicationName(), serialDevice));
+        mainWindow.reset(new MainWindow(getApplicationName(), serialDevice, portListMonitor));
     }
 
     class MainWindow : public juce::DocumentWindow
     {
     public:
-        MainWindow(juce::String name, SerialDevice& serialDeviceRef)
+        MainWindow(juce::String name, SerialDevice& serialDeviceRef, SerialPortListMonitor& serialPortListMonitorRef)
             : DocumentWindow(name,
                 juce::Desktop::getInstance().getDefaultLookAndFeel()
                 .findColour(juce::ResizableWindow::backgroundColourId),
                 DocumentWindow::allButtons),
-            mainComponent(serialDeviceRef)
+            mainComponent(serialDeviceRef, serialPortListMonitorRef)
         {
             setUsingNativeTitleBar(true);
-            setContentOwned(new MainComponent(serialDeviceRef), true);
+            setContentOwned(new MainComponent(serialDeviceRef, serialPortListMonitorRef), true);
             setUsingNativeTitleBar(false);
 #if JUCE_IOS || JUCE_ANDROID
             setFullScreen(true);
@@ -113,6 +103,7 @@ private:
     std::unique_ptr<MainWindow> mainWindow;
 
     SerialDevice serialDevice;
+    SerialPortListMonitor portListMonitor;
 };
 
 START_JUCE_APPLICATION(JuceSerialApplication)

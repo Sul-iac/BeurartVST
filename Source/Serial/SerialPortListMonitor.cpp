@@ -1,5 +1,5 @@
 #include "SerialPortListMonitor.h"
-#include <juce_serialport/juce_serialport.h>
+#include <../juce_serialport/juce_serialport.h>
 
 SerialPortListMonitor::SerialPortListMonitor(void)
     : Thread("Serial Port Monitor")

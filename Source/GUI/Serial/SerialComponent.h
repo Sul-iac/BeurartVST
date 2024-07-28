@@ -22,6 +22,7 @@ private:
     SerialDevice& serialDeviceRef;
 
     juce::Slider volume1;
+    juce::Slider volume2;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SerialComponent)
 };

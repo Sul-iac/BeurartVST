@@ -1,6 +1,6 @@
 #include "SerialDevice.h"
 
-#define kBPS 115200
+#define kBPS 250000
 const auto kNumberOfDecimalPlaces{ 4 };
 
 // NOTE: This is a very basic protocol without any error checking. To add error checking, you would want to calculate an error check (checksum, crc, etc)
@@ -91,41 +91,6 @@ void SerialDevice::init(juce::String newSerialPortName)
     serialPortName = newSerialPortName;
 }
 
-void SerialDevice::handleOutVoie1(int sliderValue)
-{
-    if (serialPortOutput) {
-        DBG("serialPortOutput is valid. Sending data...");
-        juce::String commandString = "<V1_OUT=" + juce::String(sliderValue) + ">";
-        DBG("Command String: " + commandString);
-        const char* commandData = commandString.toRawUTF8();
-        int dataSize = static_cast<int>(strlen(commandData));
-
-        serialPortOutput->write(reinterpret_cast<const uint8_t*>(commandData), dataSize);
-    }
-    else {
-        DBG("serialPortOutput is null, cannot send data.");
-    }
-    /*juce::String commandString = "<V1_OUT=";
-    commandString += juce::String(sliderValue);
-    commandString += ">";
-
-    DBG("Command String: " << commandString);
-    DBG("Data Size: " << commandString.length());
-
-    const char* commandData = commandString.toRawUTF8();
-    int dataSize = juce::String(commandData).length();
-
-    if (serialPortOutput.get() != nullptr)
-    {
-        DBG("Serial Port is not null, sending data to the arduino...");
-        serialPortOutput->write(reinterpret_cast<const uint8_t*>(commandData), dataSize);
-        DBG(("Sending to Arduino: " + commandString + "\n").toRawUTF8());
-    }
-    else
-    {
-        DBG("SerialPortOutput est null. L'erreur est la");
-    } */
-}
 
 void SerialDevice::open(void)                                   //prepare le port a s'ouvrir en settant le THreadTask. Il ne sera ouvert qu'une fois appele dans run()
 {
@@ -192,52 +157,6 @@ void SerialDevice::closeSerialPort(void)
         serialPort = nullptr;
     }
 }
-
-// NOTE: these handleXXXXCommand functions store the received data into the data model, and should also alert listeners of the change
-//       I usually use ValueTrees for the data model, and use the property change callbacks to notify listeners
-
-
-
-/*void SerialDevice::handleOutVoie2(int sliderValue)
-{
-    juce::String commandString = "<V2_OUT=";
-    commandString += juce::String(sliderValue);
-    commandString += ">";
-
-    DBG("Command String: " << commandString);
-    DBG("Data Size: " << commandString.length());
-
-    const char* commandData = commandString.toRawUTF8();
-    int dataSize = juce::String(commandData).length();
-
-    if (serialPortOutput.get() != nullptr)
-        serialPortOutput->write(reinterpret_cast<const uint8_t*>(commandData), dataSize);
-}*/
-
-//=============================== TEST ====================================//
-
-
-/*void SerialDevice::handleOutVoie2(uint8_t* data, int dataSize)
-)
-{
-    if (dataSize < 2)
-        return;
-
-    uint8_t volumeVoie2 = data[1];
-
-    if (volumeVoie2 < 0)
-        volumeVoie2 = 0;
-    if (volumeVoie2 > 219)
-        volumeVoie2 = 220;
-
-    uint8_t spiData[1];
-    spiData[0] = volumeVoie2;
-
-    if (serialPortOutput.get() != nullptr)
-        serialPortOutput->write(spiData, 1);
-
-    logiquement pareil pour la voie 1;
-}*/
 
      //=========================================== Handle Commande ===================================================//
 

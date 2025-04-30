@@ -10,7 +10,7 @@ BeurartVST began life as the software front‑end for a hybrid tube preamp. The 
 - **VST3 format** – Loads in any VST3‑compatible DAW; no DSP processing is done in software—the plug‑in is purely a control surface.
 - **Serial communication (UART)** – Commands are sent to the preamp’s microcontroller via USB‑to‑UART to adjust voltages, bias and gain.
 - **C++ multithreading** – A dedicated thread handles serial I/O to keep the GUI and host audio thread responsive.
-- **`juce_serialport` module** – Third‑party JUCE module bundled in the repo for cross‑platform COM‑port access on Windows.
+- **`juce_serialport` module** – Third‑party JUCE module bundled in the repo for cross‑platform COM‑port access on Windows. Thank you Chris Roberts for your help with this wonderful librairy that you have maintained overall.
 
 ## Who Is It For?
 - Audio engineers and advanced musicians working with analog outboard gear.

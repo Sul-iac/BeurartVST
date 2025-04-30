@@ -47,15 +47,6 @@ Source/
 ```
 GUI and hardware layers are kept separate: you can swap out the serial backend (e.g. MIDI, OSC) or redesign the interface without rewriting the whole project.
 
-## Contributing
-Pull requests, issues and forks are welcome. Ideas that could help:
-- Port‑selection UI, macOS/Linux builds
-- Hardware emulation layer for testing without a preamp
-- Documentation of the serial command set
-
-## License
-Released under the **MIT License**—do what you want, just keep the attribution and license notice.
-
 ---
 
 *Bridging analog tone and digital workflow—have fun!*

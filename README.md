@@ -3,7 +3,7 @@
 **BeurartVST** is an audio plug‑in (VST3) written in C++ with the JUCE framework. It was built to control a tube pre‑amplifier over a serial (UART) link, merging the character of analog valves with the convenience of digital automation. The hardware is no longer available, so the code is released **as‑is** for anyone who wants to study or repurpose it.
 
 ## Introduction
-BeurartVST began life as the software front‑end for a hybrid tube preamp. The plug‑in exposes the preamp’s analog parameters—power supply voltage and tube gain, so they can be automated, saved in presets and recalled directly from a DAW. Because the physical unit is discontinued, this repository now serves as a technical reference and a starting point for other hardware‑in‑the‑loop projects.
+BeurartVST began life as the software front‑end for a hybrid tube preamp. The plug‑in exposes the preamp’s analog parameterspower supply voltage and tube gain, so they can be automated, saved in presets and recalled directly from a DAW. Because the physical unit is discontinued, this repository now serves as a technical reference and a starting point for other hardware‑in‑the‑loop projects.
 **Other files, such has the source code of the inital micro controller will not be shared in this repo**. You may ask it if you want by contacting me, and I will answer to all your questions with pleasure.
 ## Technical Overview
 - **JUCE framework** – Provides the GUI, plug‑in shell and parameter management (Windows build).

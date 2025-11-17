@@ -3,11 +3,11 @@
 **BeurartVST** is an audio plug‑in (VST3) written in C++ with the JUCE framework. It was built to control a tube pre‑amplifier over a serial (UART) link, merging the character of analog valves with the convenience of digital automation. The hardware is no longer available, so the code is released **as‑is** for anyone who wants to study or repurpose it.
 
 ## Introduction
-BeurartVST began life as the software front‑end for a hybrid tube preamp. The plug‑in exposes the preamp’s analog parameters—power supply voltage and tube gain—so they can be automated, saved in presets and recalled directly from a DAW. Because the physical unit is discontinued, this repository now serves as a technical reference and a starting point for other hardware‑in‑the‑loop projects.
+BeurartVST began life as the software front‑end for a hybrid tube preamp. The plug‑in exposes the preamp’s analog parameters—power supply voltage and tube gain, so they can be automated, saved in presets and recalled directly from a DAW. Because the physical unit is discontinued, this repository now serves as a technical reference and a starting point for other hardware‑in‑the‑loop projects.
 **Other files, such has the source code of the inital micro controller will not be shared in this repo**. You may ask it if you want by contacting me, and I will answer to all your questions with pleasure.
 ## Technical Overview
 - **JUCE framework** – Provides the GUI, plug‑in shell and parameter management (Windows build).
-- **VST3 format** – Loads in any VST3‑compatible DAW; no DSP processing is done in software—the plug‑in is purely a control surface.
+- **VST3 format** – Loads in any VST3‑compatible DAW; no DSP processing is done in software. the plug‑in is purely a control surface.
 - **Serial communication (UART)** – Commands are sent to the preamp’s microcontroller via USB‑to‑UART to adjust voltages, bias and gain.
 - **C++ multithreading** – A dedicated thread handles serial I/O to keep the GUI and host audio thread responsive.
 - **`juce_serialport` module** – Third‑party JUCE module bundled in the repo for cross‑platform COM‑port access on Windows. Thank you Chris Roberts for your help with this wonderful librairy that you have maintained overall.
@@ -49,5 +49,4 @@ GUI and hardware layers are kept separate: you can swap out the serial backend (
 
 ---
 
-*Bridging analog tone and digital workflow—have fun!*
 
